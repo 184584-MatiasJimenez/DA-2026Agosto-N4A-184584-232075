@@ -137,4 +137,19 @@ private String errorDeUbicacion(int tamano, int filaProa,int columnaProa, Orient
 
     throw new BatallaException("No hay lugar para ubicar este barco");
 }
+
+public List<Celda> getCeldasConBarco() {
+    List<Celda> ocupadas = new ArrayList<>();
+
+    for (int fila = 0; fila < filas; fila++) {
+        for (int columna = 0; columna < columnas; columna++) {
+            Celda celda = celdas[fila][columna];
+            if (celda.estaOcupada()) {
+                ocupadas.add(celda);
+            }
+        }
+    }
+
+    return ocupadas;
+}
 }

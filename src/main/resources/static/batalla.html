@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Batalla Naval</title>
+</head>
+<body>
+    <main>
+        <h1 id="lugar">Batalla Naval</h1>
+        <p>Estado: <span id="estado"></span></p>
+        <p id="error" role="alert"></p>
+
+        <section id="preparacion">
+            <h2>Desplegando la Flota</h2>
+            <p id="indicacion"></p>
+
+            <h3>Barcos disponibles</h3>
+            <ol id="barcosDisponibles"></ol>
+
+            <fieldset>
+                <legend>Orientación</legend>
+                <label>
+                    <input type="radio" name="orientacion"
+                           value="HORIZONTAL" checked>
+                    Horizontal
+                </label>
+                <label>
+                    <input type="radio" name="orientacion"
+                           value="VERTICAL">
+                    Vertical
+                </label>
+            </fieldset>
+
+            <button type="button" id="librarBatalla">
+                Librar batalla
+            </button>
+        </section>
+
+        <div id="tablero"></div>
+
+        <button type="button" id="volver">
+            Volver a la sala de operaciones
+        </button>
+    </main>
+
+    <script type="module">
+        import dispatcher from "./CommandDispatcher.js";
+        import BattleShipBoard from "./BattleShipBoard.js";
+
+        const lugar = new URLSearchParams(location.search).get("lugar");
+        let barcosPendientes = [];
+
+        const vista = dispatcher.registerView("batalla", {
+            urlInicio: "/batalla/vistaConectada",
+            dataInicio: { lugar },
+            onException: mensaje => {
+                document.getElementById("error").textContent = mensaje;
+            },
+            onError: (estado, mensaje) => {
+                document.getElementById("error").textContent =
+                    `Error ${estado}: ${mensaje}`;
+            }
+        });
+
+        new BattleShipBoard(
+            document.getElementById("tablero"),
+            dispatcher,
+            { anchoMaximo: 1000, altoMaximo: 700 }
+        );
+
+        vista.handler("mostrarLugar", valor => {
+            document.getElementById("lugar").textContent = valor;
+        });
+
+        vista.handler("mostrarEstado", valor => {
+            document.getElementById("estado").textContent = valor;
+            document.getElementById("preparacion").hidden =
+                valor !== "En preparación";
+        });
+
+        vista.handler("mostrarBarcosDisponibles", nombres => {
+            barcosPendientes = nombres;
+            const lista = document.getElementById("barcosDisponibles");
+            lista.replaceChildren();
+
+            nombres.forEach((nombre, indice) => {
+                const elemento = document.createElement("li");
+                elemento.textContent = nombre;
+
+                if (indice === 0) {
+                    elemento.style.fontWeight = "bold";
+                }
+
+                lista.append(elemento);
+            });
+
+            actualizarIndicacion();
+        });
+
+        document.querySelectorAll('input[name="orientacion"]').forEach(
+            opcion => {
+                opcion.addEventListener("change", () => {
+                    actualizarIndicacion();
+
+                    if (opcion.checked) {
+                        dispatcher.submit(
+                            "/batalla/seleccionarOrientacion",
+                            { orientacion: opcion.value }
+                        );
+                    }
+                });
+            }
+        );
+
+        function actualizarIndicacion() {
+            const indicacion = document.getElementById("indicacion");
+
+            if (barcosPendientes.length === 0) {
+                indicacion.textContent = "Batalla preparada";
+                return;
+            }
+
+            const orientacion = document.querySelector(
+                'input[name="orientacion"]:checked'
+            ).value;
+
+            indicacion.textContent =
+                `Posicione su ${barcosPendientes[0]} en forma ${orientacion.toLowerCase()}`;
+        }
+
+        document.getElementById("librarBatalla").addEventListener(
+            "click", () => {
+                document.getElementById("error").textContent = "";
+                dispatcher.submit("/batalla/iniciarCombate");
+            }
+        );
+
+        document.getElementById("volver").addEventListener("click", () => {
+            location.href = "/";
+        });
+
+        if (lugar) {
+            dispatcher.startView(vista);
+        } else {
+            document.getElementById("error").textContent =
+                "No se indicó una batalla";
+        }
+    </script>
+</body>
+</html>

@@ -12,6 +12,7 @@ public class Celda {
 
     private Barco barco;
     private boolean disparada;
+    private ResultadoDisparo resultado;
 
     public Celda(int fila, int columna) {
         this.fila = fila;
@@ -27,29 +28,36 @@ public class Celda {
     }
 
     public void ubicarBarco(Barco barco) {
-    this.barco = barco;
+        this.barco = barco;
     }
 
     public boolean contieneBarco(Barco barco) {
-    return this.barco == barco;
+        return this.barco == barco;
     }
 
     public ResultadoDisparo disparar() throws BatallaException {
-    if (disparada) {
-        throw new BatallaException("No se puede disparar dos veces a la misma celda");
-    }
+        if (disparada) {
+            throw new BatallaException("No se puede disparar dos veces a la misma celda");
+        }
 
-    if (barco == null) {
         disparada = true;
-        return ResultadoDisparo.AGUA;
+
+        if (barco == null) {
+            resultado = ResultadoDisparo.AGUA;
+        } else if (barco.recibirImpacto()) {
+            resultado = ResultadoDisparo.HUNDIDO;
+        } else {
+            resultado = ResultadoDisparo.IMPACTO;
+        }
+
+        return resultado;
     }
 
-    boolean hundido = barco.recibirImpacto();
-    disparada = true;
+    public ResultadoDisparo getResultado() {
+        return resultado;
+    }
 
-    if (hundido) {
-        return ResultadoDisparo.HUNDIDO;
-    }
-    return ResultadoDisparo.IMPACTO;
-    }
+    public boolean tieneImpactoPendiente() {
+    return disparada && barco != null && !barco.estaHundido();
+}
 }

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Nueva batalla</title>
+</head>
+<body>
+    <main>
+        <h1>Preparar una nueva batalla</h1>
+
+        <p id="error" role="alert"></p>
+
+        <form id="formulario" novalidate>
+            <label>
+                Lugar del combate
+                <input type="text" id="lugar" name="lugar">
+            </label>
+
+            <label>
+                Táctica de la máquina
+                <select id="tactica" name="tactica"></select>
+            </label>
+
+            <label>
+                Celdas horizontales
+                <input type="number" id="columnas" name="columnas" value="8">
+            </label>
+
+            <label>
+                Celdas verticales
+                <input type="number" id="filas" name="filas" value="8">
+            </label>
+
+            <h2>Flota</h2>
+            <div id="tiposBarco"></div>
+
+            <button type="submit">Continuar</button>
+        </form>
+
+        <button type="button" id="volver">
+            Volver a la sala de operaciones
+        </button>
+    </main>
+
+    <script type="module">
+        import dispatcher from "./CommandDispatcher.js";
+
+        const vista = dispatcher.registerView("nueva-batalla", {
+            urlInicio: "/nueva-batalla/vistaConectada",
+            onException: mensaje => {
+                document.getElementById("error").textContent = mensaje;
+            },
+            onError: (estado, mensaje) => {
+                document.getElementById("error").textContent =
+                    `Error ${estado}: ${mensaje}`;
+            }
+        });
+
+        vista.handler("mostrarTacticas", tacticas => {
+            const selector = document.getElementById("tactica");
+            selector.replaceChildren();
+
+            for (const nombre of tacticas) {
+                const opcion = document.createElement("option");
+                opcion.value = nombre;
+                opcion.textContent = nombre;
+                selector.append(opcion);
+            }
+        });
+
+        vista.handler("mostrarTiposBarco", tipos => {
+            const contenedor = document.getElementById("tiposBarco");
+            contenedor.replaceChildren();
+
+            const campos = {
+                Portaaviones: "portaaviones",
+                Acorazado: "acorazados",
+                Crucero: "cruceros",
+                Submarino: "submarinos",
+                Destructor: "destructores"
+            };
+
+            for (const tipo of tipos) {
+                const etiqueta = document.createElement("label");
+                etiqueta.textContent =
+                    `${tipo.nombre} (${tipo.tamano} celdas): `;
+
+                const cantidad = document.createElement("input");
+                cantidad.type = "number";
+                cantidad.min = "0";
+                cantidad.max = "6";
+                cantidad.value = "0";
+                cantidad.name = campos[tipo.nombre];
+
+                etiqueta.append(cantidad);
+                contenedor.append(etiqueta, document.createElement("br"));
+            }
+        });
+
+        vista.handler("irADespliegue", nombre => {
+    location.href =
+        `/batalla.html?lugar=${encodeURIComponent(nombre)}`;
+});
+
+        document.getElementById("formulario").addEventListener(
+            "submit", evento => {
+                evento.preventDefault();
+                document.getElementById("error").textContent = "";
+
+                const formulario = document.getElementById("formulario");
+                const datos = Object.fromEntries(new FormData(formulario));
+
+                dispatcher.submit("/nueva-batalla/continuar", datos);
+            }
+        );
+
+        document.getElementById("volver").addEventListener("click", () => {
+            location.href = "/";
+        });
+
+        dispatcher.startView(vista);
+    </script>
+</body>
+</html>

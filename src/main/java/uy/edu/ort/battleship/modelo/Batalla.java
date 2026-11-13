@@ -178,4 +178,18 @@ Ronda realizarRondaEnCombate(int fila, int columna)throws BatallaException {
     rondas.add(ronda);
     return ronda;
 }
+
+public List<Barco> getBarcosPropiosSinUbicar() {
+    List<Barco> disponibles = new ArrayList<>();
+
+    for (Barco barco : flotaPropia.getBarcos()) {
+        if (!oceanoPropio.barcoYaUbicado(barco)) {
+            disponibles.add(barco);
+        }
+    }
+
+    disponibles.sort((primero, segundo) ->Integer.compare(segundo.getTipo().getTamano(),primero.getTipo().getTamano()));
+
+    return disponibles;
+}
 }

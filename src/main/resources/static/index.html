@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Sala de Operaciones</title>
+</head>
+<body>
+    <main>
+        <h1>Sala de Operaciones</h1>
+
+        <section aria-label="Resultados de la campaña">
+            <p>Batallas ganadas: <span id="ganadas">0</span></p>
+            <p>Batallas perdidas: <span id="perdidas">0</span></p>
+            <p>Éxito de la campaña: <span id="exito">0</span>%</p>
+        </section>
+
+        <button type="button" id="nuevaBatalla">Iniciar nueva batalla</button>
+
+        <h2>Batallas</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Lugar</th>
+                    <th>Océano</th>
+                    <th>Estado</th>
+                    <th>Flota propia</th>
+                    <th>Flota enemiga</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody id="batallas"></tbody>
+        </table>
+    </main>
+
+    <script type="module">
+        import dispatcher from "./CommandDispatcher.js";
+
+        const vista = dispatcher.registerView("sala", {
+            urlInicio: "/sala/vistaConectada"
+        });
+
+        vista.handler("mostrarGanadas", valor => {
+            document.getElementById("ganadas").textContent = valor;
+        });
+
+        vista.handler("mostrarPerdidas", valor => {
+            document.getElementById("perdidas").textContent = valor;
+        });
+
+        vista.handler("mostrarExito", valor => {
+            document.getElementById("exito").textContent = valor;
+        });
+
+        vista.handler("mostrarBatallas", batallas => {
+            const cuerpo = document.getElementById("batallas");
+            cuerpo.replaceChildren();
+
+            for (const batalla of batallas) {
+                const fila = document.createElement("tr");
+
+                agregarCelda(fila, batalla.lugar);
+                agregarCelda(fila, `${batalla.ancho} × ${batalla.alto}`);
+                agregarCelda(fila, batalla.estado);
+                agregarCelda(fila,
+                    `${batalla.partesSanasPropias} / ${batalla.tamanoTotalPropio}`);
+                agregarCelda(fila,
+                    `${batalla.partesSanasEnemigas} / ${batalla.tamanoTotalEnemigo}`);
+
+                const accion = document.createElement("td");
+                const boton = document.createElement("button");
+                boton.type = "button";
+                boton.textContent = "Entrar";
+                boton.addEventListener("click", () => {
+                    location.href =
+                        `/batalla.html?lugar=${encodeURIComponent(batalla.lugar)}`;
+                });
+                accion.append(boton);
+                fila.append(accion);
+                cuerpo.append(fila);
+            }
+        });
+
+        function agregarCelda(fila, texto) {
+            const celda = document.createElement("td");
+            celda.textContent = texto;
+            fila.append(celda);
+        }
+
+        document.getElementById("nuevaBatalla").addEventListener("click", () => {
+            location.href = "/nueva-batalla.html";
+        });
+
+        dispatcher.startView(vista);
+    </script>
+</body>
+</html>

@@ -3,10 +3,13 @@ package uy.edu.ort.battlefield;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.Map;
+
 import org.junit.jupiter.api.Test;
 
 import uy.edu.ort.battleship.BattleShipApplication;
 import uy.edu.ort.battleship.modelo.*;
+
 
 public class OceanoTest {
 
@@ -184,5 +187,75 @@ void laMaquinaRespondeCuandoLaBatallaContinua()
     assertEquals(0, ronda.getDisparoMaquina().getFila());
     assertEquals(0, ronda.getDisparoMaquina().getColumna());
     assertEquals("En combate", batalla.getNombreEstado());
+}
+
+@Test
+void tacticaEspiralRecorreDesdeElCentro() throws BatallaException {
+    Oceano oceano = new Oceano(8, 6);
+    Tactica tactica = new TacticaEspiral();
+    int[][] esperadas = {
+        {4, 2}, {4, 3}, {3, 3}, {3, 2}, {3, 1}
+    };
+
+    for (int[] esperada : esperadas) {
+        Celda celda = tactica.elegirDisparo(oceano);
+
+        assertEquals(esperada[0], celda.getFila());
+        assertEquals(esperada[1], celda.getColumna());
+
+        oceano.disparar(celda.getFila(), celda.getColumna());
+    }
+}
+
+@Test
+void cazaYAtaqueBuscaJuntoAUnImpacto() throws BatallaException {
+    Oceano oceano = new Oceano(6, 6);
+    Barco barco = new Barco(new TipoBarco("Crucero", 3));
+    oceano.ubicarBarco(barco, 2, 2, Orientacion.HORIZONTAL);
+
+    assertEquals(ResultadoDisparo.IMPACTO, oceano.disparar(2, 2));
+
+    Tactica tactica = new TacticaCazaYAtaque();
+    Celda objetivo = tactica.elegirDisparo(oceano);
+
+    assertEquals(2, objetivo.getFila());
+    assertEquals(3, objetivo.getColumna());
+}
+
+@Test
+void cazaYAtaqueSigueLaOrientacionDelBarco() throws BatallaException {
+    Oceano oceano = new Oceano(6, 6);
+    Barco barco = new Barco(new TipoBarco("Crucero", 3));
+    oceano.ubicarBarco(barco, 2, 2, Orientacion.HORIZONTAL);
+
+    oceano.disparar(2, 2);
+    oceano.disparar(2, 3);
+
+    Celda objetivo = new TacticaCazaYAtaque().elegirDisparo(oceano);
+
+    assertEquals(2, objetivo.getFila());
+    assertEquals(4, objetivo.getColumna());
+}
+
+@Test
+void fachadaSoloGuardaBatallasValidas() throws BatallaException {
+    Fachada fachada = Fachada.getInstancia();
+    int cantidadInicial = fachada.getBatallas().size();
+
+    Batalla batalla = fachada.crearBatalla(
+            null, 8, 8, "Secuencial",
+            Map.of("Submarino", 1, "Destructor", 1));
+
+    assertEquals(cantidadInicial + 1, fachada.getBatallas().size());
+    assertEquals("En preparación", batalla.getNombreEstado());
+    assertEquals(2, batalla.getFlotaPropia().getBarcos().size());
+    assertTrue(batalla.getLugar().matches("[A-Z]{6}"));
+
+    assertThrows(BatallaException.class,
+            () -> fachada.crearBatalla(
+                    "Flota demasiado grande", 6, 6, "Secuencial",
+                    Map.of("Portaaviones", 2)));
+
+    assertEquals(cantidadInicial + 1, fachada.getBatallas().size());
 }
 }
