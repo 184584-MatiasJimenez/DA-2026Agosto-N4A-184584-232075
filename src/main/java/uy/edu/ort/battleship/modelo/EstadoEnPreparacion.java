@@ -21,4 +21,14 @@ public void iniciarCombate(Batalla batalla) throws BatallaException {
 public void agregarTipoBarco(Batalla batalla, TipoBarco tipo, int cantidad)throws BatallaException {
     batalla.agregarTipoBarcoEnPreparacion(tipo, cantidad);
 }
+
+@Override
+public boolean permiteUbicarBarcos() {
+    return true;
+}
+
+@Override
+public Ronda realizarRonda(Batalla batalla, int fila, int columna)throws BatallaException {
+    throw new BatallaException("No puede ubicar barcos en aguas enemigas");
+}
 }

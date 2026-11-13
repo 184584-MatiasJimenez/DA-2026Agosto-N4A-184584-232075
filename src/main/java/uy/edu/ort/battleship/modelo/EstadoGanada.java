@@ -6,4 +6,9 @@ public class EstadoGanada extends EstadoBatalla {
     public String getNombre() {
         return "Ganada";
     }
+
+    @Override
+public boolean estaFinalizada() {
+    return true;
+}
 }

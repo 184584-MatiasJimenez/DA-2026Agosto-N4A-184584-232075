@@ -19,4 +19,16 @@ public void agregarTipoBarco(Batalla batalla, TipoBarco tipo, int cantidad)throw
 public Ronda realizarRonda(Batalla batalla, int fila, int columna)throws BatallaException {
     throw new BatallaException("No se puede disparar en este estado");
 }
+
+public boolean permiteUbicarBarcos() {
+    return false;
+}
+
+public boolean revelaFlotaEnemiga() {
+    return false;
+}
+
+public boolean estaFinalizada() {
+    return false;
+}
 }

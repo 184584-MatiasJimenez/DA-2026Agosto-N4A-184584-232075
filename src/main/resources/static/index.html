@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="estilos.css">
     <title>Sala de Operaciones</title>
 </head>
 <body>
@@ -15,7 +16,9 @@
             <p>Éxito de la campaña: <span id="exito">0</span>%</p>
         </section>
 
-        <button type="button" id="nuevaBatalla">Iniciar nueva batalla</button>
+        <button type="button" id="nuevaBatalla">
+            Iniciar nueva batalla
+        </button>
 
         <h2>Batallas</h2>
         <table>
@@ -35,9 +38,11 @@
 
     <script type="module">
         import dispatcher from "./CommandDispatcher.js";
+        import SSECommandDispatcher from "./SSECommandDispatcher.js";
 
         const vista = dispatcher.registerView("sala", {
-            urlInicio: "/sala/vistaConectada"
+            urlInicio: "/sala/vistaConectada",
+            urlCierre: "/sala/vistaDesconectada"
         });
 
         vista.handler("mostrarGanadas", valor => {
@@ -62,19 +67,25 @@
                 agregarCelda(fila, batalla.lugar);
                 agregarCelda(fila, `${batalla.ancho} × ${batalla.alto}`);
                 agregarCelda(fila, batalla.estado);
-                agregarCelda(fila,
-                    `${batalla.partesSanasPropias} / ${batalla.tamanoTotalPropio}`);
-                agregarCelda(fila,
-                    `${batalla.partesSanasEnemigas} / ${batalla.tamanoTotalEnemigo}`);
+                agregarCelda(
+                    fila,
+                    `${batalla.partesSanasPropias} / ${batalla.tamanoTotalPropio}`
+                );
+                agregarCelda(
+                    fila,
+                    `${batalla.partesSanasEnemigas} / ${batalla.tamanoTotalEnemigo}`
+                );
 
                 const accion = document.createElement("td");
                 const boton = document.createElement("button");
                 boton.type = "button";
                 boton.textContent = "Entrar";
+
                 boton.addEventListener("click", () => {
                     location.href =
                         `/batalla.html?lugar=${encodeURIComponent(batalla.lugar)}`;
                 });
+
                 accion.append(boton);
                 fila.append(accion);
                 cuerpo.append(fila);
@@ -87,11 +98,23 @@
             fila.append(celda);
         }
 
-        document.getElementById("nuevaBatalla").addEventListener("click", () => {
-            location.href = "/nueva-batalla.html";
-        });
+        document.getElementById("nuevaBatalla").addEventListener(
+            "click",
+            () => {
+                location.href = "/nueva-batalla.html";
+            }
+        );
 
         dispatcher.startView(vista);
+
+        const conexionSSE = new SSECommandDispatcher(
+            "/sala/registrarSSE",
+            dispatcher
+        );
+
+        window.addEventListener("pagehide", () => {
+            conexionSSE.disconnect();
+        });
     </script>
 </body>
 </html>

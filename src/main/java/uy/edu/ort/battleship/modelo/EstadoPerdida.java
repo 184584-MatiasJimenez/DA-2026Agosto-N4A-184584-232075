@@ -6,4 +6,14 @@ public class EstadoPerdida extends EstadoBatalla {
     public String getNombre() {
         return "Perdida";
     }
+
+    @Override
+public boolean revelaFlotaEnemiga() {
+    return true;
+}
+
+@Override
+public boolean estaFinalizada() {
+    return true;
+}
 }
