@@ -7,12 +7,12 @@ public class Flota {
 
     private List<Barco> barcos = new ArrayList<>();
 
-    public void agregarBarco(Barco barco) {
+    private void agregarBarco(Barco barco) {
         barcos.add(barco);
     }
 
     public List<Barco> getBarcos() {
-    return new ArrayList<>(barcos);
+        return new ArrayList<>(barcos);
     }
 
     public int getPartesSanas() {
@@ -32,6 +32,27 @@ public class Flota {
     }
 
     public boolean estaHundida() {
-    return !barcos.isEmpty() && getPartesSanas() == 0;
+        return !barcos.isEmpty() && getPartesSanas() == 0;
+    }
+
+    void agregarBarcos(TipoBarco tipo, int cantidad) throws BatallaException {
+        if (tipo == null || cantidad < 0 || cantidad > 6) {
+            throw new BatallaException("La cantidad de barcos debe estar entre 0 y 6");
+        }
+
+        int existentes = 0;
+        for (Barco barco : barcos) {
+            if (barco.getTipo().getNombre().equals(tipo.getNombre())) {
+                existentes++;
+            }
+        }
+
+        if (existentes + cantidad > 6) {
+            throw new BatallaException("No puede haber más de 6 barcos de un mismo tipo");
+        }
+
+        for (int i = 0; i < cantidad; i++) {
+            agregarBarco(new Barco(tipo));
+        }
     }
 }
