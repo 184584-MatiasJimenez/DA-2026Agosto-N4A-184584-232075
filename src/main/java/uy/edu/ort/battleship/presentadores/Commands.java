@@ -1,4 +1,4 @@
-package uy.edu.ort.battleshipdemo;
+package uy.edu.ort.battleship.presentadores;
 
 import java.util.ArrayList;
 import java.util.Arrays;

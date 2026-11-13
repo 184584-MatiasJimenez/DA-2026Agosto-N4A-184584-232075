@@ -1,10 +1,13 @@
-package uy.edu.ort.battleshipdemo;
+package uy.edu.ort.battleship.presentadores;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import uy.edu.ort.battleship.dtos.InicializarDto;
+import uy.edu.ort.battleship.dtos.ValorDto;
+
 @RestController
-public class DemoTableroBatallaNavalPresenter {
+public class TableroBatallaNavalPresenter {
 
     @PostMapping("/inicializarDemo")
     public Commands inicializarDemo() {

@@ -1,4 +1,4 @@
-package uy.edu.ort.battleshipdemo;
+package uy.edu.ort.battleship;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

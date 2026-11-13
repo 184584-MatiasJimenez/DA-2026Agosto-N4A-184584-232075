@@ -1,4 +1,4 @@
-package uy.edu.ort.battleshipdemo.modelo;
+package uy.edu.ort.battleship.modelo;
 
 public enum Orientacion {
     HORIZONTAL,
