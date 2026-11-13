@@ -85,4 +85,12 @@ private boolean barcoYaUbicado(Barco barco) {
     }
     return false;
 }
+
+public ResultadoDisparo disparar(int fila, int columna) throws BatallaException {
+    if (!estaDentro(fila, columna)) {
+        throw new BatallaException("El disparo queda fuera del océano");
+    }
+
+    return celdas[fila][columna].disparar();
+}
 }

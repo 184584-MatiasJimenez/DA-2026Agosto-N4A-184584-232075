@@ -32,4 +32,20 @@ public class OceanoTest {
 
         assertFalse(oceano.getCelda(5, 4).estaOcupada());
     }
+
+    @Test
+void disparaAguaImpactaYHunde() throws BatallaException {
+    Oceano oceano = new Oceano(6, 6);
+    Barco barco = new Barco(new TipoBarco("Submarino", 2));
+    oceano.ubicarBarco(barco, 0, 0, Orientacion.HORIZONTAL);
+
+    assertEquals(ResultadoDisparo.AGUA, oceano.disparar(5, 5));
+    assertEquals(ResultadoDisparo.IMPACTO, oceano.disparar(0, 0));
+    assertEquals(1, barco.getPartesSanas());
+
+    assertEquals(ResultadoDisparo.HUNDIDO, oceano.disparar(0, 1));
+    assertTrue(barco.estaHundido());
+
+    assertThrows(BatallaException.class, () -> oceano.disparar(0, 1));
+}
 }

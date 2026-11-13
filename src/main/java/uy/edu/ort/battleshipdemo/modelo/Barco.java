@@ -18,4 +18,13 @@ public class Barco {
     public boolean estaHundido() {
         return partesSanas == 0;
     }
+
+    public boolean recibirImpacto() throws BatallaException {
+    if (estaHundido()) {
+        throw new BatallaException("El barco ya está hundido");
+    }
+
+    partesSanas--;
+    return estaHundido();
+    }
 }

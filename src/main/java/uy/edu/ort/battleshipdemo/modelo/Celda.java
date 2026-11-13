@@ -33,4 +33,23 @@ public class Celda {
     public boolean contieneBarco(Barco barco) {
     return this.barco == barco;
     }
+
+    public ResultadoDisparo disparar() throws BatallaException {
+    if (disparada) {
+        throw new BatallaException("No se puede disparar dos veces a la misma celda");
+    }
+
+    if (barco == null) {
+        disparada = true;
+        return ResultadoDisparo.AGUA;
+    }
+
+    boolean hundido = barco.recibirImpacto();
+    disparada = true;
+
+    if (hundido) {
+        return ResultadoDisparo.HUNDIDO;
+    }
+    return ResultadoDisparo.IMPACTO;
+    }
 }
