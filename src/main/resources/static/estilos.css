@@ -307,10 +307,13 @@ input[type="radio"] {
 #tablero {
     max-width: 100%;
     overflow-x: auto;
-    padding: 24px 14px;
-    border: 1px solid #2b5265;
-    border-radius: 16px;
-    background: #081d2e;
+    padding: 24px 0;
+    border: 0;
+    background: transparent;
+}
+
+#tablero .battle-ship-board-set {
+    flex-wrap: nowrap;
 }
 
 /* El tablero del curso agrega sus propios estilos.
@@ -397,8 +400,8 @@ input[type="radio"] {
     }
 
     #tablero {
-        padding: 18px 6px;
-    }
+    padding: 18px 6px;
+}
 }
 
 @media (prefers-reduced-motion: reduce) {
