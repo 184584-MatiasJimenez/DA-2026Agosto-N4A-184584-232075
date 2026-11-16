@@ -16,4 +16,9 @@ public class EstadoPerdida extends EstadoBatalla {
     public boolean estaFinalizada() {
         return true;
     }
+
+    @Override
+    public boolean esPerdida() {
+        return true;
+    }
 }

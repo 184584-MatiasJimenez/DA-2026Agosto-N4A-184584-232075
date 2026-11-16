@@ -37,6 +37,7 @@ public class Batalla extends Observable {
     private List<Ronda> rondas = new ArrayList<>();
 
     public Batalla(String lugar, int filas, int columnas, Tactica tactica) throws BatallaException {
+        validarDimensiones(filas, columnas);
         if (tactica == null) {
             throw new BatallaException("Debe seleccionar una táctica");
         }
@@ -50,16 +51,24 @@ public class Batalla extends Observable {
         this.tactica = tactica;
     }
 
+    public static void validarDimensiones(int filas, int columnas) throws BatallaException {
+        if (filas < 6 || filas > 12) {
+            throw new BatallaException("Las filas deben estar entre 6 y 12");
+        }
+        if (columnas < 6 || columnas > 12) {
+            throw new BatallaException("Las columnas deben estar entre 6 y 12");
+        }
+    }
+
     public void agregarTipoBarco(TipoBarco tipo, int cantidad) throws BatallaException {
         estado.agregarTipoBarco(this, tipo, cantidad);
     }
 
-    void agregarTipoBarcoEnPreparacion(TipoBarco tipo, int cantidad) throws BatallaException {
+    public void agregarTipoBarcoEnPreparacion(TipoBarco tipo, int cantidad) throws BatallaException {
         if (tipo == null) {
             throw new BatallaException("Debe indicar un tipo de barco");
         }
-
-        if (cantidad <= 0) {
+        if (cantidad == 0) {
             throw new BatallaException("Debe indicar una cantidad de barcos");
         }
 
@@ -68,6 +77,8 @@ public class Batalla extends Observable {
                 throw new BatallaException("No se puede modificar la flota después de ubicar un barco");
             }
         }
+
+        flotaPropia.validarCantidad(tipo, cantidad);
 
         int celdasOcupadas = flotaPropia.getTamanoTotal() + tipo.getTamano() * cantidad;
         int celdasDelOceano = oceanoPropio.getFilas() * oceanoPropio.getColumnas();
@@ -80,18 +91,12 @@ public class Batalla extends Observable {
         flotaEnemiga.agregarBarcos(tipo, cantidad);
     }
 
-    public void validarFlotaConfigurada() throws BatallaException {
-        if (flotaPropia.getBarcos().isEmpty()) {
-            throw new BatallaException("Debe seleccionar al menos un barco");
-        }
-    }
-
     public void ubicarBarcoPropio(Barco barco, int fila, int columna, Orientacion orientacion) throws BatallaException {
         estado.ubicarBarcoPropio(this, barco, fila, columna, orientacion);
         avisar(Evento.BARCO_UBICADO);
     }
 
-    void ubicarBarcoPropioEnPreparacion(Barco barco, int fila, int columna, Orientacion orientacion) throws BatallaException {
+    public void ubicarBarcoPropioEnPreparacion(Barco barco, int fila, int columna, Orientacion orientacion) throws BatallaException {
         if (!flotaPropia.getBarcos().contains(barco)) {
             throw new BatallaException("El barco no pertenece a esta batalla");
         }
@@ -117,7 +122,15 @@ public class Batalla extends Observable {
         return estado.getNombre();
     }
 
-    void ubicarFlotaEnemiga() throws BatallaException {
+    public boolean esGanada() {
+        return estado.esGanada();
+    }
+
+    public boolean esPerdida() {
+        return estado.esPerdida();
+    }
+
+    public void ubicarFlotaEnemiga() throws BatallaException {
         if (!tieneFlotaPropiaUbicada()) {
             throw new BatallaException("Debe posicionar todos sus barcos primero");
         }
@@ -154,7 +167,7 @@ public class Batalla extends Observable {
         avisar(Evento.COMBATE_INICIADO);
     }
 
-    void iniciarCombateEnPreparacion() throws BatallaException {
+    public void iniciarCombateEnPreparacion() throws BatallaException {
         ubicarFlotaEnemiga();
         estado = new EstadoEnCombate();
     }
@@ -169,7 +182,7 @@ public class Batalla extends Observable {
         return ronda;
     }
 
-    Ronda realizarRondaEnCombate(int fila, int columna) throws BatallaException {
+    public Ronda realizarRondaEnCombate(int fila, int columna) throws BatallaException {
         int numero = rondas.size() + 1;
 
         ResultadoDisparo resultadoHumano = oceanoEnemigo.disparar(fila, columna);

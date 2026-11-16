@@ -35,9 +35,12 @@ public class Flota {
         return !barcos.isEmpty() && getPartesSanas() == 0;
     }
 
-    void agregarBarcos(TipoBarco tipo, int cantidad) throws BatallaException {
-        if (tipo == null || cantidad < 0 || cantidad > 6) {
-            throw new BatallaException("La cantidad de barcos debe estar entre 0 y 6");
+    public void validarCantidad(TipoBarco tipo, int cantidad) throws BatallaException {
+        if (tipo == null) {
+            throw new BatallaException("Debe indicar un tipo de barco");
+        }
+        if (cantidad < 0 || cantidad > 6) {
+            throw new BatallaException("La cantidad de " + tipo.getNombre() + " debe estar entre 0 y 6");
         }
 
         int existentes = 0;
@@ -50,6 +53,10 @@ public class Flota {
         if (existentes + cantidad > 6) {
             throw new BatallaException("No puede haber más de 6 barcos de un mismo tipo");
         }
+    }
+
+    public void agregarBarcos(TipoBarco tipo, int cantidad) throws BatallaException {
+        validarCantidad(tipo, cantidad);
 
         for (int i = 0; i < cantidad; i++) {
             agregarBarco(new Barco(tipo));

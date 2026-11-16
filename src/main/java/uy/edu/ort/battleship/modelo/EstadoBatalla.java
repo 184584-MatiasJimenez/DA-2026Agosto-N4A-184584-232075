@@ -15,6 +15,14 @@ public abstract class EstadoBatalla {
     public void agregarTipoBarco(Batalla batalla, TipoBarco tipo, int cantidad) throws BatallaException {
         throw new BatallaException("No se puede modificar la flota en este estado");
     }
+
+    public boolean esGanada() {
+        return false;
+    }
+
+    public boolean esPerdida() {
+        return false;
+    }
     
     public Ronda realizarRonda(Batalla batalla, int fila, int columna)throws BatallaException {
         throw new BatallaException("No se puede disparar en este estado");

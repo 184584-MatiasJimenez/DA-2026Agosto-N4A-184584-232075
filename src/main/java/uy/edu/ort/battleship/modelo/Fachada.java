@@ -58,15 +58,7 @@ public class Fachada extends Observable implements Observador {
     }
 
     public synchronized Batalla crearBatalla(String lugar, int filas, int columnas, String nombreTactica, Map<String, Integer> cantidades) throws BatallaException {
-        if (filas < 6 || filas > 12) {
-            throw new BatallaException("Las filas deben estar entre 6 y 12");
-        }
-        if (columnas < 6 || columnas > 12) {
-            throw new BatallaException("Las columnas deben estar entre 6 y 12");
-        }
-        if (cantidades == null) {
-            throw new BatallaException("Debe indicar la flota");
-        }
+        Batalla.validarDimensiones(filas, columnas);
 
         Tactica tactica = fabricaTacticas.crear(nombreTactica);
         String nombreLugar = lugar == null ? "" : lugar.trim();

@@ -11,4 +11,9 @@ public class EstadoGanada extends EstadoBatalla {
     public boolean estaFinalizada() {
         return true;
     }
+
+    @Override
+    public boolean esGanada() {
+        return true;
+    }
 }
