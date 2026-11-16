@@ -48,6 +48,38 @@ public class Fachada extends Observable implements Observador {
         return new ArrayList<>(batallas);
     }
 
+    public synchronized int getBatallasGanadas() {
+        int ganadas = 0;
+
+        for (Batalla batalla : batallas) {
+            if (batalla.esGanada()) {
+                ganadas++;
+            }
+        }
+
+        return ganadas;
+    }
+
+    public synchronized int getBatallasPerdidas() {
+        int perdidas = 0;
+
+        for (Batalla batalla : batallas) {
+            if (batalla.esPerdida()) {
+                perdidas++;
+            }
+        }
+
+        return perdidas;
+    }
+
+    public synchronized int getExitoCampana() {
+        if (batallas.isEmpty()) {
+            return 0;
+        }
+
+        return getBatallasGanadas() * 100 / batallas.size();
+    }
+
     public TipoBarco buscarTipoBarco(String nombre) throws BatallaException {
         for (TipoBarco tipo : tiposBarco) {
             if (tipo.getNombre().equals(nombre)) {

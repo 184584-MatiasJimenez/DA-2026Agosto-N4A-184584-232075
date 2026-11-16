@@ -52,28 +52,17 @@ public class SalaOperacionesPresentador implements Observador {
     }
 
     private Commands resumenSala() {
-        List<Batalla> batallas = fachada.getBatallas();
         List<ResumenBatallaDto> resumenes = new ArrayList<>();
-        int ganadas = 0;
-        int perdidas = 0;
 
-        for (Batalla batalla : batallas) {
+        for (Batalla batalla : fachada.getBatallas()) {
             resumenes.add(new ResumenBatallaDto(batalla));
-
-            if (batalla.getNombreEstado().equals("Ganada")) {
-                ganadas++;
-            } else if (batalla.getNombreEstado().equals("Perdida")) {
-                perdidas++;
-            }
         }
-
-        int exito = batallas.isEmpty() ? 0 : ganadas * 100 / batallas.size();
 
         return Commands.create(
             new Command("mostrarBatallas", resumenes),
-            new Command("mostrarGanadas", ganadas),
-            new Command("mostrarPerdidas", perdidas),
-            new Command("mostrarExito", exito)
+            new Command("mostrarGanadas", fachada.getBatallasGanadas()),
+            new Command("mostrarPerdidas", fachada.getBatallasPerdidas()),
+            new Command("mostrarExito", fachada.getExitoCampana())
         );
     }
 }
