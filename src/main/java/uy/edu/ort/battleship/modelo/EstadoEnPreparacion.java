@@ -8,27 +8,27 @@ public class EstadoEnPreparacion extends EstadoBatalla {
     }
 
     @Override
-public void ubicarBarcoPropio(Batalla batalla, Barco barco,int fila, int columna,Orientacion orientacion) throws BatallaException {
-    batalla.ubicarBarcoPropioEnPreparacion(barco, fila, columna, orientacion);
-}
+    public void ubicarBarcoPropio(Batalla batalla, Barco barco, int fila, int columna, Orientacion orientacion) throws BatallaException {
+        batalla.ubicarBarcoPropioEnPreparacion(barco, fila, columna, orientacion);
+    }
 
-@Override
-public void iniciarCombate(Batalla batalla) throws BatallaException {
-    batalla.iniciarCombateEnPreparacion();
-}
+    @Override
+    public void iniciarCombate(Batalla batalla) throws BatallaException {
+        batalla.iniciarCombateEnPreparacion();
+    }
 
-@Override
-public void agregarTipoBarco(Batalla batalla, TipoBarco tipo, int cantidad)throws BatallaException {
-    batalla.agregarTipoBarcoEnPreparacion(tipo, cantidad);
-}
+    @Override
+    public void agregarTipoBarco(Batalla batalla, TipoBarco tipo, int cantidad) throws BatallaException {
+        batalla.agregarTipoBarcoEnPreparacion(tipo, cantidad);
+    }
 
-@Override
-public boolean permiteUbicarBarcos() {
-    return true;
-}
+    @Override
+    public boolean permiteUbicarBarcos() {
+        return true;
+    }
 
-@Override
-public Ronda realizarRonda(Batalla batalla, int fila, int columna)throws BatallaException {
-    throw new BatallaException("No puede ubicar barcos en aguas enemigas");
-}
+    @Override
+    public Ronda realizarRonda(Batalla batalla, int fila, int columna) throws BatallaException {
+        throw new BatallaException("No puede ubicar barcos en aguas enemigas");
+    }
 }

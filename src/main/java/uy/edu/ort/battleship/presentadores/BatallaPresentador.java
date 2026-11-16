@@ -34,23 +34,18 @@ public class BatallaPresentador implements Observador {
     private Batalla batallaActual;
     private Orientacion orientacionSeleccionada = Orientacion.HORIZONTAL;
 
-    public BatallaPresentador(
-            Fachada fachada,
-            ConexionNavegador conexionNavegador) {
+    public BatallaPresentador(Fachada fachada, ConexionNavegador conexionNavegador) {
         this.fachada = fachada;
         this.conexionNavegador = conexionNavegador;
     }
 
-    @GetMapping(
-            value = "/batalla/registrarSSE",
-            produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    @GetMapping(value = "/batalla/registrarSSE", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter registrarSSE() {
         return conexionNavegador.conectarSSE();
     }
 
     @PostMapping("/batalla/vistaConectada")
-    public Commands vistaConectada(@RequestParam String lugar)
-            throws BatallaException {
+    public Commands vistaConectada(@RequestParam String lugar) throws BatallaException {
 
         Batalla nuevaBatalla = fachada.buscarBatalla(lugar);
 
@@ -63,18 +58,20 @@ public class BatallaPresentador implements Observador {
         orientacionSeleccionada = Orientacion.HORIZONTAL;
 
         InicializarDto tablero = new InicializarDto(
-                batallaActual.getOceanoPropio().getFilas(),
-                batallaActual.getOceanoPropio().getColumnas(),
-                "/batalla/ubicarBarco",
-                "/batalla/disparar");
+            batallaActual.getOceanoPropio().getFilas(),
+            batallaActual.getOceanoPropio().getColumnas(),
+            "/batalla/ubicarBarco",
+            "/batalla/disparar"
+        );
 
         Commands respuesta = Commands.create(
-                new Command("mostrarLugar", batallaActual.getLugar()),
-                new Command("mostrarEstado", batallaActual.getNombreEstado()),
-                new Command("mostrarRonda", batallaActual.getNumeroRonda()),
-                new Command("inicializar", tablero),
-                barcosDisponibles(batallaActual),
-                bajasEnemigas(batallaActual));
+            new Command("mostrarLugar", batallaActual.getLugar()),
+            new Command("mostrarEstado", batallaActual.getNombreEstado()),
+            new Command("mostrarRonda", batallaActual.getNumeroRonda()),
+            new Command("inicializar", tablero),
+            barcosDisponibles(batallaActual),
+            bajasEnemigas(batallaActual)
+        );
 
         for (Command comando : barcosEnTablero(batallaActual)) {
             respuesta.add(comando);
@@ -104,49 +101,45 @@ public class BatallaPresentador implements Observador {
     }
 
    @Override
-public void actualizar(Observable origen, Object evento) {
-    if (origen != batallaActual) {
-        return;
-    }
+    public void actualizar(Observable origen, Object evento) {
+        if (origen != batallaActual) {
+            return;
+        }
 
-    Commands respuesta = Commands.create(
+        Commands respuesta = Commands.create(
             new Command("mostrarEstado", batallaActual.getNombreEstado()),
             new Command("mostrarRonda", batallaActual.getNumeroRonda()),
             barcosDisponibles(batallaActual),
-            bajasEnemigas(batallaActual));
+            bajasEnemigas(batallaActual)
+        );
 
-    for (Command comando : barcosEnTablero(batallaActual)) {
-        respuesta.add(comando);
-    }
-
-    for (Ronda ronda : batallaActual.getRondas()) {
-        respuesta.add(mostrarDisparo(ronda.getDisparoHumano(), false));
-
-        if (ronda.getDisparoMaquina() != null) {
-            respuesta.add(mostrarDisparo(ronda.getDisparoMaquina(), true));
+        for (Command comando : barcosEnTablero(batallaActual)) {
+            respuesta.add(comando);
         }
-    }
 
-    for (Command comando : barcosEnemigosPorRevelar(batallaActual)) {
-        respuesta.add(comando);
-    }
+        for (Ronda ronda : batallaActual.getRondas()) {
+            respuesta.add(mostrarDisparo(ronda.getDisparoHumano(), false));
 
-    conexionNavegador.enviar(respuesta);
-}
+            if (ronda.getDisparoMaquina() != null) {
+                respuesta.add(mostrarDisparo(ronda.getDisparoMaquina(), true));
+            }
+        }
+
+        for (Command comando : barcosEnemigosPorRevelar(batallaActual)) {
+            respuesta.add(comando);
+        }
+
+        conexionNavegador.enviar(respuesta);
+    }
 
     @PostMapping("/batalla/seleccionarOrientacion")
-    public Commands seleccionarOrientacion(
-            @RequestParam Orientacion orientacion) {
+    public Commands seleccionarOrientacion(@RequestParam Orientacion orientacion) {
         orientacionSeleccionada = orientacion;
         return Commands.create();
     }
 
     @PostMapping("/batalla/ubicarBarco")
-    public Commands ubicarBarco(
-            @RequestParam int coordenadaVertical,
-            @RequestParam int coordenadaHorizontal)
-            throws BatallaException {
-
+    public Commands ubicarBarco(@RequestParam int coordenadaVertical, @RequestParam int coordenadaHorizontal) throws BatallaException {
         if (batallaActual == null) {
             throw new BatallaException("Debe entrar a una batalla");
         }
@@ -162,13 +155,13 @@ public void actualizar(Observable origen, Object evento) {
 
         Barco siguiente = disponibles.get(0);
         batallaActual.ubicarBarcoPropio(
-                siguiente,
-                coordenadaVertical,
-                coordenadaHorizontal,
-                orientacionSeleccionada);
+            siguiente,
+            coordenadaVertical,
+            coordenadaHorizontal,
+            orientacionSeleccionada
+        );
 
-        Commands respuesta = Commands.create(
-                barcosDisponibles(batallaActual));
+        Commands respuesta = Commands.create(barcosDisponibles(batallaActual));
 
         for (Command comando : barcosEnTablero(batallaActual)) {
             respuesta.add(comando);
@@ -186,15 +179,17 @@ public void actualizar(Observable origen, Object evento) {
         batallaActual.iniciarCombate();
 
         InicializarDto tablero = new InicializarDto(
-                batallaActual.getOceanoPropio().getFilas(),
-                batallaActual.getOceanoPropio().getColumnas(),
-                "/batalla/ubicarBarco",
-                "/batalla/disparar");
+            batallaActual.getOceanoPropio().getFilas(),
+            batallaActual.getOceanoPropio().getColumnas(),
+            "/batalla/ubicarBarco",
+            "/batalla/disparar"
+        );
 
         Commands respuesta = Commands.create(
-                new Command("mostrarEstado", batallaActual.getNombreEstado()),
-                new Command("mostrarRonda", batallaActual.getNumeroRonda()),
-                new Command("inicializar", tablero));
+            new Command("mostrarEstado", batallaActual.getNombreEstado()),
+            new Command("mostrarRonda", batallaActual.getNumeroRonda()),
+            new Command("inicializar", tablero)
+        );
 
         for (Command comando : barcosEnTablero(batallaActual)) {
             respuesta.add(comando);
@@ -204,29 +199,21 @@ public void actualizar(Observable origen, Object evento) {
     }
 
     @PostMapping("/batalla/disparar")
-    public Commands disparar(
-            @RequestParam int coordenadaVertical,
-            @RequestParam int coordenadaHorizontal)
-            throws BatallaException {
-
+    public Commands disparar(@RequestParam int coordenadaVertical, @RequestParam int coordenadaHorizontal) throws BatallaException {
         if (batallaActual == null) {
             throw new BatallaException("Debe entrar a una batalla");
         }
 
-        Ronda ronda = batallaActual.realizarRonda(
-                coordenadaVertical, coordenadaHorizontal);
+        Ronda ronda = batallaActual.realizarRonda(coordenadaVertical, coordenadaHorizontal);
 
-        Commands respuesta = Commands.create(
-                mostrarDisparo(ronda.getDisparoHumano(), false));
+        Commands respuesta = Commands.create(mostrarDisparo(ronda.getDisparoHumano(), false));
 
         if (ronda.getDisparoMaquina() != null) {
             respuesta.add(mostrarDisparo(ronda.getDisparoMaquina(), true));
         }
 
-        respuesta.add(new Command(
-                "mostrarEstado", batallaActual.getNombreEstado()));
-        respuesta.add(new Command(
-                "mostrarRonda", batallaActual.getNumeroRonda()));
+        respuesta.add(new Command("mostrarEstado", batallaActual.getNombreEstado()));
+        respuesta.add(new Command("mostrarRonda", batallaActual.getNumeroRonda()));
         respuesta.add(bajasEnemigas(batallaActual));
 
         for (Command comando : barcosEnemigosPorRevelar(batallaActual)) {
@@ -237,18 +224,11 @@ public void actualizar(Observable origen, Object evento) {
     }
 
     private Command mostrarDisparo(Disparo disparo, boolean aguasPropias) {
-        String id = aguasPropias
-                ? "mostrarAguasPropias"
-                : "mostrarAguasEnemigas";
+        String id = aguasPropias ? "mostrarAguasPropias" : "mostrarAguasEnemigas";
 
-        String valor = disparo.getResultado() == ResultadoDisparo.AGUA
-                ? "agua"
-                : "impacto";
+        String valor = disparo.getResultado() == ResultadoDisparo.AGUA ? "agua" : "impacto";
 
-        return new Command(id, new ValorDto(
-                disparo.getFila(),
-                disparo.getColumna(),
-                valor));
+        return new Command(id, new ValorDto(disparo.getFila(), disparo.getColumna(), valor));
     }
 
     private Command barcosDisponibles(Batalla batalla) {
@@ -266,11 +246,13 @@ public void actualizar(Observable origen, Object evento) {
 
         for (Celda celda : batalla.getOceanoPropio().getCeldasConBarco()) {
             comandos.add(new Command(
-                    "mostrarAguasPropias",
-                    new ValorDto(
-                            celda.getFila(),
-                            celda.getColumna(),
-                            "barco")));
+                "mostrarAguasPropias", 
+                new ValorDto(
+                    celda.getFila(),
+                    celda.getColumna(),
+                    "barco")
+                )
+            );
         }
 
         return comandos;
@@ -281,11 +263,13 @@ public void actualizar(Observable origen, Object evento) {
 
         for (Celda celda : batalla.getBarcosEnemigosPorRevelar()) {
             comandos.add(new Command(
-                    "mostrarAguasEnemigas",
-                    new ValorDto(
-                            celda.getFila(),
-                            celda.getColumna(),
-                            "barco")));
+                "mostrarAguasEnemigas",
+                new ValorDto(
+                    celda.getFila(),
+                    celda.getColumna(),
+                    "barco")
+                )
+            );
         }
 
         return comandos;
@@ -301,8 +285,6 @@ public void actualizar(Observable origen, Object evento) {
             texto.append("{").append(tamano).append("}");
         }
 
-        return new Command(
-                "bajasEnemigas",
-                texto.length() == 0 ? "Ninguna" : texto.toString());
+        return new Command("bajasEnemigas", texto.length() == 0 ? "Ninguna" : texto.toString());
     }
 }

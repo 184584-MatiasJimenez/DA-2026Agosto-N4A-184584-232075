@@ -19,9 +19,6 @@ public class FabricaTacticas {
     }
 
     public List<Tactica> getTacticasDisponibles() {
-    return List.of(
-            new TacticaSecuencial(),
-            new TacticaEspiral(),
-            new TacticaCazaYAtaque());
-}
+        return List.of(new TacticaSecuencial(), new TacticaEspiral(), new TacticaCazaYAtaque());
+    }
 }

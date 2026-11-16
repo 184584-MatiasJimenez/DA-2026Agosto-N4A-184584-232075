@@ -34,15 +34,11 @@ public class NuevaBatallaPresentador {
             nombresTacticas.add(tactica.getNombre());
         }
 
-        return Commands.create(
-                new Command("mostrarTacticas", nombresTacticas),
-                new Command("mostrarTiposBarco", fachada.getTiposBarco()));
+        return Commands.create(new Command("mostrarTacticas", nombresTacticas), new Command("mostrarTiposBarco", fachada.getTiposBarco()));
     }
 
     @PostMapping("/nueva-batalla/continuar")
-    public Commands continuar(@ModelAttribute NuevaBatallaDto datos)
-            throws BatallaException {
-
+    public Commands continuar(@ModelAttribute NuevaBatallaDto datos) throws BatallaException {
         Map<String, Integer> cantidades = new HashMap<>();
         cantidades.put("Portaaviones", datos.getPortaaviones());
         cantidades.put("Acorazado", datos.getAcorazados());
@@ -51,13 +47,13 @@ public class NuevaBatallaPresentador {
         cantidades.put("Destructor", datos.getDestructores());
 
         Batalla batalla = fachada.crearBatalla(
-                datos.getLugar(),
-                datos.getFilas(),
-                datos.getColumnas(),
-                datos.getTactica(),
-                cantidades);
+            datos.getLugar(),
+            datos.getFilas(),
+            datos.getColumnas(),
+            datos.getTactica(),
+            cantidades
+        );
 
-        return Commands.create(
-                new Command("irADespliegue", batalla.getLugar()));
+        return Commands.create(new Command("irADespliegue", batalla.getLugar()));
     }
 }

@@ -67,14 +67,13 @@ public class SalaOperacionesPresentador implements Observador {
             }
         }
 
-        int exito = batallas.isEmpty()
-                ? 0
-                : ganadas * 100 / batallas.size();
+        int exito = batallas.isEmpty() ? 0 : ganadas * 100 / batallas.size();
 
         return Commands.create(
-                new Command("mostrarBatallas", resumenes),
-                new Command("mostrarGanadas", ganadas),
-                new Command("mostrarPerdidas", perdidas),
-                new Command("mostrarExito", exito));
+            new Command("mostrarBatallas", resumenes),
+            new Command("mostrarGanadas", ganadas),
+            new Command("mostrarPerdidas", perdidas),
+            new Command("mostrarExito", exito)
+        );
     }
 }

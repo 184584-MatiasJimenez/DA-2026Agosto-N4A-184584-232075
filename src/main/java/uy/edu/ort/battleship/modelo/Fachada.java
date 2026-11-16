@@ -57,14 +57,7 @@ public class Fachada extends Observable implements Observador {
         throw new BatallaException("El tipo de barco indicado no existe");
     }
 
-    public synchronized Batalla crearBatalla(
-            String lugar,
-            int filas,
-            int columnas,
-            String nombreTactica,
-            Map<String, Integer> cantidades)
-            throws BatallaException {
-
+    public synchronized Batalla crearBatalla(String lugar, int filas, int columnas, String nombreTactica, Map<String, Integer> cantidades) throws BatallaException {
         if (filas < 6 || filas > 12) {
             throw new BatallaException("Las filas deben estar entre 6 y 12");
         }
@@ -82,8 +75,7 @@ public class Fachada extends Observable implements Observador {
             nombreLugar = generarLugar();
         }
         if (existeLugar(nombreLugar)) {
-            throw new BatallaException(
-                    "No se puede librar más de una batalla en el mismo lugar, cambie de nombre");
+            throw new BatallaException("No se puede librar más de una batalla en el mismo lugar, cambie de nombre");
         }
 
         for (String nombreTipo : cantidades.keySet()) {
@@ -96,9 +88,7 @@ public class Fachada extends Observable implements Observador {
             int cantidad = valor == null ? 0 : valor;
 
             if (cantidad < 0 || cantidad > 6) {
-                throw new BatallaException(
-                        "La cantidad de " + tipo.getNombre()
-                                + " debe estar entre 0 y 6");
+                throw new BatallaException("La cantidad de " + tipo.getNombre() + " debe estar entre 0 y 6");
             }
             partes += tipo.getTamano() * cantidad;
         }
@@ -107,12 +97,10 @@ public class Fachada extends Observable implements Observador {
             throw new BatallaException("Debe seleccionar al menos un barco");
         }
         if (partes * 4 >= filas * columnas) {
-            throw new BatallaException(
-                    "La flota debe ocupar menos del 25% del océano");
+            throw new BatallaException("La flota debe ocupar menos del 25% del océano");
         }
 
-        Batalla batalla = new Batalla(
-                nombreLugar, filas, columnas, tactica);
+        Batalla batalla = new Batalla(nombreLugar, filas, columnas, tactica);
 
         for (TipoBarco tipo : tiposBarco) {
             Integer valor = cantidades.get(tipo.getNombre());

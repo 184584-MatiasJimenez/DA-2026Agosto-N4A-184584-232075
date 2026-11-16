@@ -27,6 +27,7 @@ public class TacticaCazaYAtaque implements Tactica {
         if (enLinea != null) {
             return enLinea;
         }
+
         for (int fila = 0; fila < oceano.getFilas(); fila++) {
             for (int columna = 0; columna < oceano.getColumnas(); columna++) {
                 Celda celda = oceano.getCelda(fila, columna);
@@ -44,8 +45,7 @@ public class TacticaCazaYAtaque implements Tactica {
     }
 
     private Celda primeraVecinaDisponible(Oceano oceano, int fila, int columna) {
-        int[][] direcciones = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}
-        };
+        int[][] direcciones = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
 
         for (int[] direccion : direcciones) {
             int nuevaFila = fila + direccion[0];
@@ -84,50 +84,47 @@ public class TacticaCazaYAtaque implements Tactica {
     }
 
     private Celda buscarEnLinea(Oceano oceano) {
-    for (int fila = 0; fila < oceano.getFilas(); fila++) {
-        for (int columna = 0; columna < oceano.getColumnas(); columna++) {
-            if (!oceano.getCelda(fila, columna).tieneImpactoPendiente()) {
-                continue;
-            }
-
-            if (columna + 1 < oceano.getColumnas()
-                    && oceano.getCelda(fila, columna + 1).tieneImpactoPendiente()) {
-                Celda siguiente = celdaDisponible(oceano, fila, columna + 2);
-                if (siguiente != null) {
-                    return siguiente;
+        for (int fila = 0; fila < oceano.getFilas(); fila++) {
+            for (int columna = 0; columna < oceano.getColumnas(); columna++) {
+                if (!oceano.getCelda(fila, columna).tieneImpactoPendiente()) {
+                    continue;
                 }
 
-                Celda anterior = celdaDisponible(oceano, fila, columna - 1);
-                if (anterior != null) {
-                    return anterior;
-                }
-            }
+                if (columna + 1 < oceano.getColumnas() && oceano.getCelda(fila, columna + 1).tieneImpactoPendiente()) {
+                    Celda siguiente = celdaDisponible(oceano, fila, columna + 2);
+                    if (siguiente != null) {
+                        return siguiente;
+                    }
 
-            if (fila + 1 < oceano.getFilas()
-                    && oceano.getCelda(fila + 1, columna).tieneImpactoPendiente()) {
-                Celda siguiente = celdaDisponible(oceano, fila + 2, columna);
-                if (siguiente != null) {
-                    return siguiente;
+                    Celda anterior = celdaDisponible(oceano, fila, columna - 1);
+                    if (anterior != null) {
+                        return anterior;
+                    }
                 }
 
-                Celda anterior = celdaDisponible(oceano, fila - 1, columna);
-                if (anterior != null) {
-                    return anterior;
+                if (fila + 1 < oceano.getFilas() && oceano.getCelda(fila + 1, columna).tieneImpactoPendiente()) {
+                    Celda siguiente = celdaDisponible(oceano, fila + 2, columna);
+                    if (siguiente != null) {
+                        return siguiente;
+                    }
+
+                    Celda anterior = celdaDisponible(oceano, fila - 1, columna);
+                    if (anterior != null) {
+                        return anterior;
+                    }
                 }
             }
         }
-    }
 
-    return null;
-}
-
-private Celda celdaDisponible(Oceano oceano, int fila, int columna) {
-    if (fila < 0 || fila >= oceano.getFilas()
-            || columna < 0 || columna >= oceano.getColumnas()) {
         return null;
-    }
+    }   
 
-    Celda celda = oceano.getCelda(fila, columna);
-    return celda.fueDisparada() ? null : celda;
-}
+    private Celda celdaDisponible(Oceano oceano, int fila, int columna) {
+        if (fila < 0 || fila >= oceano.getFilas() || columna < 0 || columna >= oceano.getColumnas()) {
+            return null;
+        }
+
+        Celda celda = oceano.getCelda(fila, columna);
+        return celda.fueDisparada() ? null : celda;
+    }
 }

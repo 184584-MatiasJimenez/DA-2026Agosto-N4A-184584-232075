@@ -27,8 +27,7 @@ public class TacticaEspiral implements Tactica {
                     fila += cambioFila[direccion];
                     columna += cambioColumna[direccion];
 
-                    if (fila >= 0 && fila < oceano.getFilas()
-                            && columna >= 0 && columna < oceano.getColumnas()) {
+                    if (fila >= 0 && fila < oceano.getFilas() && columna >= 0 && columna < oceano.getColumnas()) {
                         Celda celda = oceano.getCelda(fila, columna);
                         if (!celda.fueDisparada()) {
                             return celda;

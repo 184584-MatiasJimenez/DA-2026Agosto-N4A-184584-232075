@@ -8,12 +8,12 @@ public class EstadoPerdida extends EstadoBatalla {
     }
 
     @Override
-public boolean revelaFlotaEnemiga() {
-    return true;
-}
+    public boolean revelaFlotaEnemiga() {
+        return true;
+    }
 
-@Override
-public boolean estaFinalizada() {
-    return true;
-}
+    @Override
+    public boolean estaFinalizada() {
+        return true;
+    }
 }

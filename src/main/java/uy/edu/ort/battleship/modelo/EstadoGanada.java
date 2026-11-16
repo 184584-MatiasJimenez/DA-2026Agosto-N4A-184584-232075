@@ -8,7 +8,7 @@ public class EstadoGanada extends EstadoBatalla {
     }
 
     @Override
-public boolean estaFinalizada() {
-    return true;
-}
+    public boolean estaFinalizada() {
+        return true;
+    }
 }

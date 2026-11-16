@@ -20,11 +20,10 @@ public class Barco {
     }
 
     public boolean recibirImpacto() throws BatallaException {
-    if (estaHundido()) {
-        throw new BatallaException("El barco ya está hundido");
-    }
-
-    partesSanas--;
-    return estaHundido();
+        if (estaHundido()) {
+            throw new BatallaException("El barco ya está hundido");
+        }
+        partesSanas--;
+        return estaHundido();
     }
 }

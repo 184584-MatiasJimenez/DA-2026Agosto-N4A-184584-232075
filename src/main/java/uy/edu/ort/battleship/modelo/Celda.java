@@ -58,13 +58,13 @@ public class Celda {
     }
 
     public boolean tieneImpactoPendiente() {
-    return disparada && barco != null && !barco.estaHundido();
-}
-
-public int getTamanoBarcoHundido() {
-    if (resultado != ResultadoDisparo.HUNDIDO) {
-        return 0;
+        return disparada && barco != null && !barco.estaHundido();
     }
-    return barco.getTipo().getTamano();
-}
+
+    public int getTamanoBarcoHundido() {
+        if (resultado != ResultadoDisparo.HUNDIDO) {
+            return 0;
+        }
+        return barco.getTipo().getTamano();
+    }
 }

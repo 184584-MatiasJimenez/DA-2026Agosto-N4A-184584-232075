@@ -9,26 +9,26 @@ public abstract class EstadoBatalla {
     }
 
     public void iniciarCombate(Batalla batalla) throws BatallaException {
-    throw new BatallaException("No se puede iniciar el combate en este estado");
-}
+        throw new BatallaException("No se puede iniciar el combate en este estado");
+    }
 
-public void agregarTipoBarco(Batalla batalla, TipoBarco tipo, int cantidad)throws BatallaException {
-    throw new BatallaException("No se puede modificar la flota en este estado");
-}
-
-public Ronda realizarRonda(Batalla batalla, int fila, int columna)throws BatallaException {
-    throw new BatallaException("No se puede disparar en este estado");
-}
-
-public boolean permiteUbicarBarcos() {
-    return false;
-}
-
-public boolean revelaFlotaEnemiga() {
-    return false;
-}
-
-public boolean estaFinalizada() {
-    return false;
-}
+    public void agregarTipoBarco(Batalla batalla, TipoBarco tipo, int cantidad) throws BatallaException {
+        throw new BatallaException("No se puede modificar la flota en este estado");
+    }
+    
+    public Ronda realizarRonda(Batalla batalla, int fila, int columna)throws BatallaException {
+        throw new BatallaException("No se puede disparar en este estado");
+    }
+    
+    public boolean permiteUbicarBarcos() {
+        return false;
+    }
+    
+    public boolean revelaFlotaEnemiga() {
+        return false;
+    }
+    
+    public boolean estaFinalizada() {
+        return false;
+    }
 }
