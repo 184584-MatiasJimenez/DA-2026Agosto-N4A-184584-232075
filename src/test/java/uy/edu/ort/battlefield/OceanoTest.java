@@ -1,13 +1,9 @@
 package uy.edu.ort.battlefield;
 
-
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Map;
-
 import org.junit.jupiter.api.Test;
-
-import uy.edu.ort.battleship.BattleShipApplication;
 import uy.edu.ort.battleship.modelo.*;
 
 

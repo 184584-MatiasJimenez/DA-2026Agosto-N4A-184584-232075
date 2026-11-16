@@ -64,7 +64,7 @@ public class Batalla extends Observable {
         estado.agregarTipoBarco(this, tipo, cantidad);
     }
 
-    public void agregarTipoBarcoEnPreparacion(TipoBarco tipo, int cantidad) throws BatallaException {
+    void agregarTipoBarcoEnPreparacion(TipoBarco tipo, int cantidad) throws BatallaException {
         if (tipo == null) {
             throw new BatallaException("Debe indicar un tipo de barco");
         }
@@ -96,7 +96,7 @@ public class Batalla extends Observable {
         avisar(Evento.BARCO_UBICADO);
     }
 
-    public void ubicarBarcoPropioEnPreparacion(Barco barco, int fila, int columna, Orientacion orientacion) throws BatallaException {
+    void ubicarBarcoPropioEnPreparacion(Barco barco, int fila, int columna, Orientacion orientacion) throws BatallaException {
         if (!flotaPropia.getBarcos().contains(barco)) {
             throw new BatallaException("El barco no pertenece a esta batalla");
         }
@@ -130,7 +130,7 @@ public class Batalla extends Observable {
         return estado.esPerdida();
     }
 
-    public void ubicarFlotaEnemiga() throws BatallaException {
+    private void ubicarFlotaEnemiga() throws BatallaException {
         if (!tieneFlotaPropiaUbicada()) {
             throw new BatallaException("Debe posicionar todos sus barcos primero");
         }
@@ -167,7 +167,7 @@ public class Batalla extends Observable {
         avisar(Evento.COMBATE_INICIADO);
     }
 
-    public void iniciarCombateEnPreparacion() throws BatallaException {
+    void iniciarCombateEnPreparacion() throws BatallaException {
         ubicarFlotaEnemiga();
         estado = new EstadoEnCombate();
     }
@@ -182,7 +182,7 @@ public class Batalla extends Observable {
         return ronda;
     }
 
-    public Ronda realizarRondaEnCombate(int fila, int columna) throws BatallaException {
+    Ronda realizarRondaEnCombate(int fila, int columna) throws BatallaException {
         int numero = rondas.size() + 1;
 
         ResultadoDisparo resultadoHumano = oceanoEnemigo.disparar(fila, columna);
