@@ -91,6 +91,12 @@ public class Batalla extends Observable {
         flotaEnemiga.agregarBarcos(tipo, cantidad);
     }
 
+    void validarFlotaConfigurada() throws BatallaException {
+        if (flotaPropia.getBarcos().isEmpty()) {
+            throw new BatallaException("Debe seleccionar al menos un barco");
+        }
+    }
+
     public void ubicarBarcoPropio(Barco barco, int fila, int columna, Orientacion orientacion) throws BatallaException {
         estado.ubicarBarcoPropio(this, barco, fila, columna, orientacion);
         avisar(Evento.BARCO_UBICADO);

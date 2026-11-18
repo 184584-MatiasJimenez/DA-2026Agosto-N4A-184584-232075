@@ -106,34 +106,18 @@ public class Fachada extends Observable implements Observador {
             buscarTipoBarco(nombreTipo);
         }
 
-        int partes = 0;
-        for (TipoBarco tipo : tiposBarco) {
-            Integer valor = cantidades.get(tipo.getNombre());
-            int cantidad = valor == null ? 0 : valor;
-
-            if (cantidad < 0 || cantidad > 6) {
-                throw new BatallaException("La cantidad de " + tipo.getNombre() + " debe estar entre 0 y 6");
-            }
-            partes += tipo.getTamano() * cantidad;
-        }
-
-        if (partes == 0) {
-            throw new BatallaException("Debe seleccionar al menos un barco");
-        }
-        if (partes * 4 >= filas * columnas) {
-            throw new BatallaException("La flota debe ocupar menos del 25% del océano");
-        }
-
         Batalla batalla = new Batalla(nombreLugar, filas, columnas, tactica);
 
         for (TipoBarco tipo : tiposBarco) {
             Integer valor = cantidades.get(tipo.getNombre());
             int cantidad = valor == null ? 0 : valor;
 
-            if (cantidad > 0) {
+            if (cantidad != 0) {
                 batalla.agregarTipoBarco(tipo, cantidad);
             }
         }
+
+        batalla.validarFlotaConfigurada();
 
         batalla.agregarObservador(this);
         batallas.add(batalla);
